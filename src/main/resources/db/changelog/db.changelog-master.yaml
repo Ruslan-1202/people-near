@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20260115/person
+      author: Abushaev
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            endDelimiter: \n;;
+            path: /db/changelog/2026/2026_01_15_person.sql
+            splitStatements: true
+            stripComments: true

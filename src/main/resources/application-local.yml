@@ -1,0 +1,9 @@
+server:
+  port: 9090
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.boot: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.boot.autoconfigure: INFO
