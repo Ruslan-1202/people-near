@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController()
-@RequestMapping("/person")
+@RequestMapping({"/person", "/person/"})
 public class PersonController {
     private final PersonService personService;
 

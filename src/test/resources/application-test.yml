@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 9090
 logging:
   level:
     root: INFO
@@ -9,7 +9,9 @@ logging:
     org.springframework.boot.autoconfigure: INFO
 spring:
   datasource:
-    url: jdbc:h2:file:./db/people_db
+    url: jdbc:h2:mem:people_db
     username: dbuser
     password: 12345
     driver-class-name: org.h2.Driver
+  liquibase:
+    enabled: true

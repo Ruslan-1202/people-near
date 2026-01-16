@@ -15,8 +15,10 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable = false)
     private String name;
+    private String middleName;
+    private String lastName;
+    private String nickName;
     @Column(nullable = false)
     private LocalDate birthDate;
 }
