@@ -9,3 +9,13 @@ databaseChangeLog:
             path: /db/changelog/2026/2026_01_15_person.sql
             splitStatements: true
             stripComments: true
+  - changeSet:
+      id: 20260116/person
+      author: Abushaev
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            endDelimiter: \n;;
+            path: /db/changelog/2026/2026_01_16_person_new_fields.sql
+            splitStatements: true
+            stripComments: true
