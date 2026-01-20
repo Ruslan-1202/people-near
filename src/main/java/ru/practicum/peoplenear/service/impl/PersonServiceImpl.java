@@ -1,4 +1,4 @@
-package ru.practicum.peoplenear.service;
+package ru.practicum.peoplenear.service.impl;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,7 @@ import ru.practicum.peoplenear.dto.PersonDTO;
 import ru.practicum.peoplenear.exception.NotFoundException;
 import ru.practicum.peoplenear.mapper.PersonMapper;
 import ru.practicum.peoplenear.repository.PersonRepository;
+import ru.practicum.peoplenear.service.PersonService;
 
 import java.util.List;
 

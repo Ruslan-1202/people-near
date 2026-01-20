@@ -2,11 +2,11 @@ server:
   port: 8080
 logging:
   level:
-    root: INFO
-    org.springframework.web: DEBUG
-    org.springframework.boot: DEBUG
+    root: OFF
+    #    org.springframework.web: DEBUG
+    #    org.springframework.boot: DEBUG
     org.hibernate.SQL: DEBUG
-    org.springframework.boot.autoconfigure: INFO
+#    org.springframework.boot.autoconfigure: INFO
 spring:
   datasource:
     url: jdbc:h2:file:./db/people_db
@@ -17,5 +17,6 @@ spring:
     init:
       #      почему то для H2 ликви не отрабатывает
       schema-locations: classpath:db/changelog/**/*.sql
+  #      data-locations: classpath:data_local.sql
   liquibase:
     enabled: false
