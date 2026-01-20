@@ -66,8 +66,27 @@ public class PersonControllerTest {
                 )
                 .andDo(print())
                 .andExpectAll(
+                        status().isOk(),
                         jsonPath("$.id", notNullValue()),
                         jsonPath("$.name", is("Test Create 1"))
+                );
+    }
+
+    @SneakyThrows
+    @Test
+    @DisplayName("Плохое создание записи")
+    void shouldBadCreatePerson() {
+        mockMvc.perform(post("/person")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                   "birthDate": "2004-05-23"
+                                }
+                                """)
+                )
+                .andDo(print())
+                .andExpectAll(
+                        status().is4xxClientError()
                 );
     }
 
@@ -82,6 +101,18 @@ public class PersonControllerTest {
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.id", is((int) id))
+                );
+    }
+
+    @SneakyThrows
+    @Test
+    @DisplayName("Плохое получение одной записи")
+    void shouldGetByBadIdPerson() {
+        mockMvc.perform(get("/person/" + 99999)
+                )
+                .andDo(print())
+                .andExpectAll(
+                        status().is4xxClientError()
                 );
     }
 
