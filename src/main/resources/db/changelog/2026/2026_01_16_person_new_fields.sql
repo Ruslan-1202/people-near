@@ -8,5 +8,8 @@ ALTER TABLE person
     ADD COLUMN IF NOT EXISTS middle_name TEXT NULL;
 ALTER TABLE person
     ADD COLUMN IF NOT EXISTS nick_name TEXT NULL;
+
+ALTER TABLE person
+    DROP CONSTRAINT IF EXISTS person_c1_names;
 ALTER TABLE person
     ADD CONSTRAINT person_c1_names CHECK ( name IS NOT NULL OR last_name IS NOT NULL OR nick_name IS NOT NULL );

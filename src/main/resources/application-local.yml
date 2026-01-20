@@ -16,6 +16,6 @@ spring:
   sql:
     init:
       #      почему то для H2 ликви не отрабатывает
-      schema-locations: classpath:db/changelog/*/*.sql
+      schema-locations: classpath:db/changelog/**/*.sql
   liquibase:
     enabled: false
