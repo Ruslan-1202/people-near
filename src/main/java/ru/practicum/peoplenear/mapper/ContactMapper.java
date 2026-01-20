@@ -10,7 +10,7 @@ public class ContactMapper {
         return ContactDTO.builder()
                 .id(contact.getId())
                 .contactType(contact.getContactType())
-                .person(contact.getPerson())
+                .person(PersonMapper.personToPersonDTO(contact.getPerson()))
                 .value(contact.getValue())
                 .build();
     }
