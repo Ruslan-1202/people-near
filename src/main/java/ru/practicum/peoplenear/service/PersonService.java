@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import ru.practicum.peoplenear.dto.PersonAndContactsDTO;
 import ru.practicum.peoplenear.dto.PersonCreateDTO;
 import ru.practicum.peoplenear.dto.PersonDTO;
+import ru.practicum.peoplenear.model.Person;
 
 import java.util.List;
 
@@ -46,4 +47,12 @@ public interface PersonService {
      * @return - новая запись
      */
     PersonDTO updatePerson(long id, PersonDTO personDTO);
+
+    /**
+     * Получение Entity с исключением по ИД
+     *
+     * @param id - ид
+     * @return - человек
+     */
+    Person findEntityById(long id);
 }

@@ -16,4 +16,6 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     List<Contact> findAllByPersonId(long id);
 
     List<Contact> findAllByPersonIdIn(Set<Long> ids);
+
+    void deleteAllByPersonId(long id);
 }

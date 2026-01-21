@@ -2,10 +2,10 @@ package ru.practicum.peoplenear.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.peoplenear.dto.ContactCreateDTO;
 import ru.practicum.peoplenear.dto.ContactDTO;
+import ru.practicum.peoplenear.dto.ContactShortDTO;
 import ru.practicum.peoplenear.service.ContactService;
 
 import java.util.List;
@@ -17,9 +17,39 @@ import java.util.List;
 public class ContactController {
     private final ContactService contactService;
 
-    @GetMapping
-    public List<ContactDTO> getContacts() {
-        log.info("Get contacts");
+    @PostMapping
+    public ContactShortDTO create(@RequestBody ContactCreateDTO dto) {
+        log.info("save contact: {}", dto);
+        return contactService.create(dto);
+    }
+
+    @GetMapping()
+    public List<ContactDTO> getAllContacts() {
+        log.info("getAllContacts::Get contacts");
         return contactService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ContactShortDTO getContactById(@PathVariable long id) {
+        log.info("getContactById::Get contact by id: {}", id);
+        return contactService.getContactById(id);
+    }
+
+    @GetMapping("/person/{personId}")
+    public List<ContactShortDTO> getContactsByPerson(@PathVariable long personId) {
+        log.info("getContactsByPerson::Get contacts by person: {}", personId);
+        return contactService.findByPersonId(personId);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteContactById(@PathVariable long id) {
+        log.info("deleteContactById::Delete contact by id: {}", id);
+        contactService.deleteContactById(id);
+    }
+
+    @DeleteMapping("/person/{personId}")
+    public void deleteContactsByPerson(@PathVariable long personId) {
+        log.info("deleteContactsByPerson::Delete contacts by person: {}", personId);
+        contactService.deleteContactsByPerson(personId);
     }
 }
