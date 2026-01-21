@@ -3,6 +3,7 @@ package ru.practicum.peoplenear.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.peoplenear.dto.PersonAndContactsDTO;
 import ru.practicum.peoplenear.dto.PersonCreateDTO;
 import ru.practicum.peoplenear.dto.PersonDTO;
 import ru.practicum.peoplenear.service.PersonService;
@@ -23,7 +24,7 @@ public class PersonController {
     }
 
     @GetMapping
-    public List<PersonDTO> findAll() {
+    public List<PersonAndContactsDTO> findAll() {
         log.info("Finding all persons");
         return personService.findAllPersons();
     }
