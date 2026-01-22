@@ -3,7 +3,6 @@ package ru.practicum.peoplenear.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.peoplenear.dto.ContactCreateDTO;
 import ru.practicum.peoplenear.dto.ContactDTO;
 import ru.practicum.peoplenear.dto.ContactShortDTO;
 import ru.practicum.peoplenear.service.ContactService;
@@ -17,10 +16,17 @@ import java.util.List;
 public class ContactController {
     private final ContactService contactService;
 
+
     @PostMapping
-    public ContactShortDTO create(@RequestBody ContactCreateDTO dto) {
-        log.info("save contact: {}", dto);
+    public ContactShortDTO createContact(@RequestBody ContactDTO dto) {
+        log.info("createContact::save contact: {}", dto);
         return contactService.create(dto);
+    }
+
+    @PostMapping("/{id}")
+    public ContactShortDTO updateContact(@PathVariable Long id, @RequestBody ContactDTO dto) {
+        log.info("updateContact::update contact: {}", dto);
+        return contactService.updateContact(id, dto);
     }
 
     @GetMapping()

@@ -1,6 +1,6 @@
 package ru.practicum.peoplenear.service;
 
-import ru.practicum.peoplenear.dto.ContactCreateDTO;
+import jakarta.validation.Valid;
 import ru.practicum.peoplenear.dto.ContactDTO;
 import ru.practicum.peoplenear.dto.ContactShortDTO;
 
@@ -36,7 +36,7 @@ public interface ContactService {
      * @param dto - DTO
      * @return DTO with ID
      */
-    ContactShortDTO create(ContactCreateDTO dto);
+    ContactShortDTO create(@Valid ContactDTO dto);
 
     /**
      * Delete contact
@@ -51,4 +51,13 @@ public interface ContactService {
      * @param personId - person ID
      */
     void deleteContactsByPerson(long personId);
+
+    /**
+     * Modify contact
+     *
+     * @param id  - id of contact
+     * @param dto - dto
+     * @return - updated contact
+     */
+    ContactShortDTO updateContact(Long id, ContactDTO dto);
 }

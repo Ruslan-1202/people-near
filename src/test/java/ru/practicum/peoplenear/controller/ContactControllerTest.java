@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.peoplenear.enumeration.ContactType;
@@ -22,8 +23,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,6 +42,90 @@ public class ContactControllerTest {
     void setUp() {
         contactRepository.deleteAll();
         personRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("Создание записи")
+    @SneakyThrows
+    void shouldCreateContact() {
+        var person = getPerson();
+        mockMvc.perform(post("/contact")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.format("""
+                                {
+                                    "personId": %s,
+                                    "contactType": "EMAIL",
+                                    "value": "email@email.com"
+                                }
+                                """, person.getId()))
+                )
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.contactType", is(ContactType.EMAIL.name())),
+                        jsonPath("$.value", is("email@email.com"))
+                );
+    }
+
+    @Test
+    @DisplayName("Плохое создание записи - нет человека")
+    @SneakyThrows
+    void shouldCreateContactBadNoPerson() {
+        mockMvc.perform(post("/contact")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "contactType": "EMAIL",
+                                    "value": "email@email.com"
+                                }
+                                """)
+                )
+                .andExpectAll(
+                        status().is4xxClientError()
+                );
+    }
+
+    @Test
+    @DisplayName("Плохое создание записи - есть ИД")
+    @SneakyThrows
+    void shouldCreateContactBadIdPresent() {
+        var person = getPerson();
+        mockMvc.perform(post("/contact")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.format("""
+                                {
+                                    "id": 1,
+                                    "personId": %s,
+                                    "contactType": "EMAIL",
+                                    "value": "email@email.com"
+                                }
+                                """, person.getId()))
+                )
+                .andExpectAll(
+                        status().is4xxClientError()
+                );
+    }
+
+    @Test
+    @DisplayName("Изменение записи")
+    @SneakyThrows
+    void shouldUpdateContact() {
+        var contact = createContacts().get(0);
+        mockMvc.perform(post("/contact/" + contact.getPerson().getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.format("""
+                                {
+                                    "id": %s,
+                                    "personId": %s,
+                                    "contactType": "EMAIL",
+                                    "value": "emailUpdate@email.com"
+                                }
+                                """, contact.getPerson().getId(), contact.getPerson().getId()))
+                )
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.contactType", is(ContactType.EMAIL.name())),
+                        jsonPath("$.value", is("emailUpdate@email.com"))
+                );
     }
 
     @Test
@@ -135,12 +219,7 @@ public class ContactControllerTest {
     }
 
     private List<Contact> createContacts() {
-        var person = personRepository.save(
-                Person.builder()
-                        .name("Test name 1")
-                        .birthDate(LocalDate.of(2011, 1, 4))
-                        .build()
-        );
+        var person = getPerson();
         List<Contact> contacts = new ArrayList<>();
         contacts.add(
                 contactRepository.save(
@@ -161,5 +240,14 @@ public class ContactControllerTest {
                 )
         );
         return contacts;
+    }
+
+    private Person getPerson() {
+        return personRepository.save(
+                Person.builder()
+                        .name("Test name 1")
+                        .birthDate(LocalDate.of(2011, 1, 4))
+                        .build()
+        );
     }
 }

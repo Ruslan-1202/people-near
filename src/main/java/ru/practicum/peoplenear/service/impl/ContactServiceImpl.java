@@ -1,19 +1,24 @@
 package ru.practicum.peoplenear.service.impl;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.peoplenear.dto.ContactCreateDTO;
+import org.springframework.validation.annotation.Validated;
 import ru.practicum.peoplenear.dto.ContactDTO;
 import ru.practicum.peoplenear.dto.ContactShortDTO;
 import ru.practicum.peoplenear.exception.NotFoundException;
+import ru.practicum.peoplenear.exception.ProcessingException;
 import ru.practicum.peoplenear.mapper.ContactMapper;
+import ru.practicum.peoplenear.model.Contact;
 import ru.practicum.peoplenear.repository.ContactRepository;
 import ru.practicum.peoplenear.service.ContactService;
 import ru.practicum.peoplenear.service.PersonService;
+import ru.practicum.peoplenear.validation.Marker;
 
 import java.util.List;
 
+@Validated
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -22,10 +27,11 @@ public class ContactServiceImpl implements ContactService {
     private final PersonService personService;
 
     @Transactional
+    @Validated({Marker.onCreate.class})
     @Override
-    public ContactShortDTO create(ContactCreateDTO dto) {
+    public ContactShortDTO create(@Valid ContactDTO dto) {
         var person = personService.findEntityById(dto.getPersonId());
-        var contact = ContactMapper.contactCreateDTOToContact(dto, person);
+        var contact = ContactMapper.contactDTOToContact(dto, person);
         return ContactMapper.contactToContactShortDTO(contactRepository.save(contact));
     }
 
@@ -38,9 +44,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactShortDTO getContactById(long id) {
-        return contactRepository.findById(id)
-                .map(ContactMapper::contactToContactShortDTO)
-                .orElseThrow(() -> new NotFoundException("Contact id=" + id + " not found"));
+        return ContactMapper.contactToContactShortDTO(getContactEntityById(id));
     }
 
     @Override
@@ -59,5 +63,22 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void deleteContactsByPerson(long personId) {
         contactRepository.deleteAllByPersonId(personId);
+    }
+
+    @Transactional
+    @Override
+    public ContactShortDTO updateContact(Long id, ContactDTO dto) {
+        var contact = getContactEntityById(id);
+        if (dto.getValue() != null) {
+            contact.setValue(dto.getValue());
+        } else {
+            throw new ProcessingException("Only values can be updated");
+        }
+        return ContactMapper.contactToContactShortDTO(contactRepository.save(contact));
+    }
+
+    private Contact getContactEntityById(long id) {
+        return contactRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Contact id=" + id + " not found"));
     }
 }
