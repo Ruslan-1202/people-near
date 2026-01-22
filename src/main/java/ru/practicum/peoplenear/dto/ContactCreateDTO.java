@@ -7,7 +7,6 @@ import ru.practicum.peoplenear.enumeration.ContactType;
 @Data
 @Builder
 public class ContactCreateDTO {
-    private long id;
     private long personId;
     private ContactType contactType;
     private String value;

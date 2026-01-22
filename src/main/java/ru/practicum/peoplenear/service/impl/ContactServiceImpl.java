@@ -45,14 +45,17 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public List<ContactShortDTO> findByPersonId(long id) {
+        personService.findEntityById(id);
         return ContactMapper.contactsToContactShortDTOs(contactRepository.findAllByPersonId(id));
     }
 
+    @Transactional
     @Override
     public void deleteContactById(long id) {
         contactRepository.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void deleteContactsByPerson(long personId) {
         contactRepository.deleteAllByPersonId(personId);
