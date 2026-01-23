@@ -230,6 +230,7 @@ public class ContactControllerTest {
                                 .build()
                 )
         );
+
         contacts.add(
                 contactRepository.save(
                         Contact.builder()
