@@ -63,8 +63,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonDTO findPersonById(long id) {
-        return PersonMapper.personToPersonDTO(findEntityById(id));
+    public PersonAndContactsDTO findPersonById(long id) {
+        return PersonMapper.personToPersonAndContactsDTO(findEntityById(id));
     }
 
     @Transactional

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Builder
@@ -21,4 +22,7 @@ public class Person {
     private String nickName;
     @Column(nullable = false)
     private LocalDate birthDate;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "person_id")
+    private List<Contact> contacts;
 }

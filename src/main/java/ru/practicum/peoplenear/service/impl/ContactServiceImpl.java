@@ -49,8 +49,8 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public List<ContactShortDTO> findByPersonId(long id) {
-        personService.findEntityById(id);
-        return ContactMapper.contactsToContactShortDTOs(contactRepository.findAllByPersonId(id));
+        var person = personService.findEntityById(id);
+        return ContactMapper.contactsToContactShortDTOs(person.getContacts());
     }
 
     @Transactional

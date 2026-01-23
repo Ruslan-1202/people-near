@@ -54,4 +54,16 @@ public class PersonMapper {
                 .contacts(ContactMapper.contactsToContactShortDTOs(contacts))
                 .build();
     }
+
+    public PersonAndContactsDTO personToPersonAndContactsDTO(Person person) {
+        return PersonAndContactsDTO.builder()
+                .id(person.getId())
+                .name(person.getName())
+                .middleName(person.getMiddleName())
+                .lastName(person.getLastName())
+                .nickName(person.getNickName())
+                .birthDate(person.getBirthDate())
+                .contacts(ContactMapper.contactsToContactShortDTOs(person.getContacts()))
+                .build();
+    }
 }

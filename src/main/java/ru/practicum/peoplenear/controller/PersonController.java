@@ -30,7 +30,7 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public PersonDTO findById(@PathVariable long id) {
+    public PersonAndContactsDTO findById(@PathVariable long id) {
         log.info("Finding person by id: {}", id);
         return personService.findPersonById(id);
     }

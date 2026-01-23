@@ -40,7 +40,6 @@ public class ContactControllerTest {
 
     @BeforeEach
     void setUp() {
-        contactRepository.deleteAll();
         personRepository.deleteAll();
     }
 
