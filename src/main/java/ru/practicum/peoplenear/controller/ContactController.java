@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.peoplenear.dto.ContactDTO;
 import ru.practicum.peoplenear.dto.ContactShortDTO;
+import ru.practicum.peoplenear.dto.MessageDTO;
 import ru.practicum.peoplenear.service.ContactService;
+import ru.practicum.peoplenear.service.MessageService;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ import java.util.List;
 @RequestMapping("/contact")
 public class ContactController {
     private final ContactService contactService;
-
+    private final MessageService messageService;
 
     @PostMapping
     public ContactShortDTO createContact(@RequestBody ContactDTO dto) {
@@ -57,5 +59,11 @@ public class ContactController {
     public void deleteContactsByPerson(@PathVariable long personId) {
         log.info("deleteContactsByPerson::Delete contacts by person: {}", personId);
         contactService.deleteContactsByPerson(personId);
+    }
+
+    @PostMapping("/{id}/send-message")
+    public String sendMessage(@PathVariable long id, @RequestBody MessageDTO dto) {
+        log.info("sendMessage::Send contact: {}\nmessage={}", id, dto);
+        return messageService.sendMessage(id, dto);
     }
 }
