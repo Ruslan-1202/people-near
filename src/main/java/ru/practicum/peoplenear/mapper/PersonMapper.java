@@ -32,17 +32,6 @@ public class PersonMapper {
                 .build();
     }
 
-    public Person personDTOToPerson(PersonDTO dto) {
-        return Person.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .middleName(dto.getMiddleName())
-                .lastName(dto.getLastName())
-                .nickName(dto.getNickName())
-                .birthDate(dto.getBirthDate())
-                .build();
-    }
-
     public PersonAndContactsDTO personToPersonAndContactsDTO(Person person, List<Contact> contacts) {
         return PersonAndContactsDTO.builder()
                 .id(person.getId())
