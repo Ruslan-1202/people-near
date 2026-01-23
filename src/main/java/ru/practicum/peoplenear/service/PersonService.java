@@ -30,7 +30,7 @@ public interface PersonService {
      * @param id - ид
      * @return - человек
      */
-    PersonDTO findPersonById(long id);
+    PersonAndContactsDTO findPersonById(long id);
 
     /**
      * Удаление записи
@@ -49,7 +49,7 @@ public interface PersonService {
     PersonDTO updatePerson(long id, PersonDTO personDTO);
 
     /**
-     * Получение Entity с исключением по ИД
+     * Получение Entity с исключением и контактами по ИД
      *
      * @param id - ид
      * @return - человек

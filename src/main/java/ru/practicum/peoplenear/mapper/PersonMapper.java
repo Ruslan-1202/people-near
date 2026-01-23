@@ -32,17 +32,6 @@ public class PersonMapper {
                 .build();
     }
 
-    public Person personDTOToPerson(PersonDTO dto) {
-        return Person.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .middleName(dto.getMiddleName())
-                .lastName(dto.getLastName())
-                .nickName(dto.getNickName())
-                .birthDate(dto.getBirthDate())
-                .build();
-    }
-
     public PersonAndContactsDTO personToPersonAndContactsDTO(Person person, List<Contact> contacts) {
         return PersonAndContactsDTO.builder()
                 .id(person.getId())
@@ -52,6 +41,18 @@ public class PersonMapper {
                 .nickName(person.getNickName())
                 .birthDate(person.getBirthDate())
                 .contacts(ContactMapper.contactsToContactShortDTOs(contacts))
+                .build();
+    }
+
+    public PersonAndContactsDTO personToPersonAndContactsDTO(Person person) {
+        return PersonAndContactsDTO.builder()
+                .id(person.getId())
+                .name(person.getName())
+                .middleName(person.getMiddleName())
+                .lastName(person.getLastName())
+                .nickName(person.getNickName())
+                .birthDate(person.getBirthDate())
+                .contacts(ContactMapper.contactsToContactShortDTOs(person.getContacts()))
                 .build();
     }
 }
