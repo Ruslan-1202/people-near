@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.peoplenear.enumeration.ContactType;
+import ru.practicum.peoplenear.exception.ProcessingException;
 import ru.practicum.peoplenear.model.Contact;
 import ru.practicum.peoplenear.model.Person;
 import ru.practicum.peoplenear.repository.ContactRepository;
@@ -215,6 +216,28 @@ public class ContactControllerTest {
                 );
         assertEquals(0, contactRepository.count(), "Неверное количество после удаления");
 
+    }
+
+    @Test
+    @SneakyThrows
+    @DisplayName("Отправка сообщения")
+    void shouldSendMessage() {
+        String message = "Test 1 message";
+        var contact = createContacts().stream()
+                .filter(a -> ContactType.PHONE.equals(a.getContactType()))
+                .findFirst()
+                .orElseThrow(() -> new ProcessingException("Bad creating test data"));
+        mockMvc.perform(post("/contact/{id}/send-message", contact.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.format("""
+                                {
+                                   "message": "%s"
+                                }
+                                """, message)))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", is(message + ", SMS sent"))
+                );
     }
 
     private List<Contact> createContacts() {
