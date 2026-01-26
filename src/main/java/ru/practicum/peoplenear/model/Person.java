@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -25,4 +26,7 @@ public class Person {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "person_id")
     private List<Contact> contacts;
+    @Column(name = "creation_ts", updatable = false)
+    @Builder.Default
+    private ZonedDateTime creationTs = ZonedDateTime.now();
 }

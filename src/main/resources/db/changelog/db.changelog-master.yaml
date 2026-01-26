@@ -39,3 +39,13 @@ databaseChangeLog:
             path: /db/changelog/2026/2026_01_22_contact_add_constraint.sql
             splitStatements: true
             stripComments: true
+  - changeSet:
+      id: 20260126/person_add_date
+      author: Abushaev
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            endDelimiter: \n;;
+            path: /db/changelog/2026/2026_01_26_person_add_date_create.sql
+            splitStatements: true
+            stripComments: true
