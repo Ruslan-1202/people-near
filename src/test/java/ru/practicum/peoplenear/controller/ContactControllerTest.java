@@ -1,6 +1,5 @@
 package ru.practicum.peoplenear.controller;
 
-import ch.qos.logback.core.model.processor.ProcessorException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.peoplenear.enumeration.ContactType;
+import ru.practicum.peoplenear.exception.ProcessingException;
 import ru.practicum.peoplenear.model.Contact;
 import ru.practicum.peoplenear.model.Person;
 import ru.practicum.peoplenear.repository.ContactRepository;
@@ -226,7 +226,7 @@ public class ContactControllerTest {
         var contact = createContacts().stream()
                 .filter(a -> ContactType.PHONE.equals(a.getContactType()))
                 .findFirst()
-                .orElseThrow(ProcessorException::new);
+                .orElseThrow(() -> new ProcessingException("Bad creating test data"));
         mockMvc.perform(post("/contact/{id}/send-message", contact.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.format("""
