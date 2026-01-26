@@ -1,5 +1,6 @@
 package ru.practicum.peoplenear.controller;
 
+import ch.qos.logback.core.model.processor.ProcessorException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -215,6 +216,28 @@ public class ContactControllerTest {
                 );
         assertEquals(0, contactRepository.count(), "Неверное количество после удаления");
 
+    }
+
+    @Test
+    @SneakyThrows
+    @DisplayName("Отправка сообщения")
+    void shouldSendMessage() {
+        String message = "Test 1 message";
+        var contact = createContacts().stream()
+                .filter(a -> ContactType.PHONE.equals(a.getContactType()))
+                .findFirst()
+                .orElseThrow(ProcessorException::new);
+        mockMvc.perform(post("/contact/{id}/send-message", contact.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(String.format("""
+                                {
+                                   "message": "%s"
+                                }
+                                """, message)))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$", is(message + ", SMS sent"))
+                );
     }
 
     private List<Contact> createContacts() {

@@ -20,12 +20,17 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public String sendMessage(long contactId, MessageDTO dto) {
-        var contact = contactService.getContactById(contactId);
-        SendMessage sendMessage = sendMessageMap.get("send" + contact.getContactType());
+        return getService(
+                contactService.getContactById(contactId).getContactType().toString()
+        ).sendMessage(dto.getMessage());
+    }
+
+    private SendMessage getService(String contactType) {
+        SendMessage sendMessage = sendMessageMap.get("send" + contactType);
         if (sendMessage == null) {
-            log.error("SendMessage service not found for {}", contact.getContactType());
+            log.error("SendMessage service not found for {}", contactType);
             throw new ProcessingException("Error sending message");
         }
-        return sendMessage.sendMessage(dto.getMessage());
+        return sendMessage;
     }
 }
