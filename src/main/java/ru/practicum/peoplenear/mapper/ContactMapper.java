@@ -22,7 +22,7 @@ public class ContactMapper {
         return ContactDTO.builder()
                 .id(contact.getId())
                 .contactType(contact.getContactType())
-                .personId(contact.getId())
+                .personId(contact.getPerson().getId())
                 .value(contact.getValue())
                 .build();
     }

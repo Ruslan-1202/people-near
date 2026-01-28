@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -13,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class Person extends AuditBaseClass {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -23,10 +22,6 @@ public class Person {
     private String nickName;
     @Column(nullable = false)
     private LocalDate birthDate;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "person_id")
+    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Contact> contacts;
-    @Column(name = "creation_ts", updatable = false)
-    @Builder.Default
-    private ZonedDateTime creationTs = ZonedDateTime.now();
 }
