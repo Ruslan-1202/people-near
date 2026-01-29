@@ -1,5 +1,7 @@
 package ru.practicum.peoplenear.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,15 +12,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.peoplenear.exception.NotFoundException;
 import ru.practicum.peoplenear.model.Person;
 import ru.practicum.peoplenear.repository.PersonRepository;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,7 +36,8 @@ public class PersonControllerTest {
     MockMvc mockMvc;
     @Autowired
     private PersonRepository personRepository;
-
+    public static final ObjectMapper jackson = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
     @BeforeEach
     void setUp() {
         personRepository.deleteAll();
@@ -55,7 +60,8 @@ public class PersonControllerTest {
     @Test
     @DisplayName("Создать запись")
     void shouldCreatePerson() {
-        mockMvc.perform(post("/person")
+        ZonedDateTime now = ZonedDateTime.now();
+        var result = mockMvc.perform(post("/person")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -69,7 +75,11 @@ public class PersonControllerTest {
                         status().isOk(),
                         jsonPath("$.id", notNullValue()),
                         jsonPath("$.name", is("Test Create 1"))
-                );
+                ).andReturn();
+        var id = jackson.readValue(result.getResponse().getContentAsString(), Person.class).getId();
+        var person = personRepository.findById(id).orElseThrow(() -> new NotFoundException("Person not found"));
+        assertFalse(now.isAfter(person.getCreationTs()), "Creation ts is wrong");
+        assertNull(person.getEditTs(), "Edit ts is wrong");
     }
 
     @SneakyThrows
@@ -88,6 +98,31 @@ public class PersonControllerTest {
                 .andExpectAll(
                         status().is4xxClientError()
                 );
+    }
+
+    @SneakyThrows
+    @Test
+    @DisplayName("Редактирование записи")
+    void shouldUpdatePerson() {
+        ZonedDateTime now = ZonedDateTime.now();
+        var id = createTestPersons().get(0);
+        mockMvc.perform(post("/person/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                 {
+                                     "name": "Test Update 1",
+                                     "lastName": "Test Update 2"
+                                 }
+                                """))
+                .andDo(print())
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.name", is("Test Update 1")),
+                        jsonPath("$.lastName", is("Test Update 2"))
+                ).andReturn();
+        var person = personRepository.findById(id).orElseThrow(() -> new NotFoundException("Person not found"));
+        assertFalse(now.isAfter(person.getCreationTs()), "Creation ts is changed");
+        assertTrue(person.getEditTs() != null && !now.isAfter(person.getEditTs()), "Edit ts is wrong");
     }
 
     @SneakyThrows
